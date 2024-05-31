@@ -1,23 +1,18 @@
 import express from 'express';
 import * as userController from '../controllers/user.controller';
-import { newUserValidator } from '../validators/user.validator';
-import { userAuth } from '../middlewares/auth.middleware';
+import { signInUserValidator,loginValidator ,emailValidator ,passwordValidator} from '../validators/user.validator';
+import { userAuth , userResetAuth} from '../middlewares/auth.middleware';
 
 const router = express.Router();
 
-//route to get all users
-router.get('', userController.getAllUsers);
+//route to Register a new user
+router.post('', signInUserValidator, userController.signInUser);
 
-//route to create a new user
-router.post('', newUserValidator, userController.newUser);
+router.post('/login',loginValidator, userController.userLogin);
 
-//route to get a single user by their user id
-router.get('/:id', userAuth, userController.getUser);
+router.post('/forgotpassword', emailValidator, userController.forgetPassword);
 
-//route to update a single user by their user id
-router.put('/:id', userController.updateUser);
+router.post('/resetPassword',userResetAuth, passwordValidator, userController.resetPassword);
 
-//route to delete a single user by their user id
-router.delete('/:id', userController.deleteUser);
 
 export default router;
