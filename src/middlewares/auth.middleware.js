@@ -1,26 +1,35 @@
-import HttpStatus from 'http-status-codes';
 import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv'
+dotenv.config()
+const key = process.env.JWT_SECRET_KEY;
+const resetKey=process.env.SECRET_KEY;
 
-/**
- * Middleware to authenticate if user has a valid Authorization token
- * Authorization: Bearer <token>
- *
- * @param {Object} req
- * @param {Object} res
- * @param {Function} next
- */
+
 export const userAuth = async (req, res, next) => {
   try {
-    let bearerToken = req.header('Authorization');
-    if (!bearerToken)
-      throw {
-        code: HttpStatus.BAD_REQUEST,
-        message: 'Authorization token is required'
-      };
-    bearerToken = bearerToken.split(' ')[1];
+    let bearerToken = req.headers.authorization;
+    if (!bearerToken) {
+      throw new Error('Token Not provided');
+    }
+    bearerToken=bearerToken.split(' ')[1]
+    const {userId}= await jwt.verify(bearerToken, key);
+    res.locals.userId = userId;
+    res.locals.token = bearerToken;
+    next();
+  } catch (error) {
+    next(error);
+  }
+};
 
-    const { user } = await jwt.verify(bearerToken, 'your-secret-key');
-    res.locals.user = user;
+export const userResetAuth = async (req, res, next) => {
+  try {
+    let bearerToken = req.headers.authorization;
+    if (!bearerToken) {
+      throw new Error('Token Not provided');
+    }
+    bearerToken=bearerToken.split(' ')[1]
+    const {userId}= await jwt.verify(bearerToken,resetKey);
+    res.locals.userId = userId;
     res.locals.token = bearerToken;
     next();
   } catch (error) {

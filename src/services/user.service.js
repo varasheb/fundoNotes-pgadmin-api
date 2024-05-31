@@ -2,6 +2,8 @@ import sequelize, { DataTypes } from '../config/database';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import sendmail from '../utils/sendEmail';
+
 
 const User = require('../models/user.model')(sequelize, DataTypes);
 
@@ -29,4 +31,23 @@ export const userLogin = async ({ email, password }) => {
 
   const token = jwt.sign({ userId: user.id }, key, { expiresIn: '1h' });
   return { user, token };
+};
+
+export const forgetPassword = async ({ email }) => {
+  const user = await User.findOne({ where: { email } });
+  if (!user) throw new Error("This email does not exist");
+
+  const token = jwt.sign({ userId: user.id }, resetkey, { expiresIn: '10m' });
+  const result = await sendmail(user.email, token);
+  return { user, token, result };
+};
+
+export const resetPassword = async (userId, newPassword) => {
+  const user = await User.findByPk(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+  return user;
 };
