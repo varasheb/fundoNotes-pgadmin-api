@@ -12,9 +12,9 @@ router.get('', userAuth , noteController.getAllNotes);
 
 router.get('/:_id', userAuth ,noteController.getNote);
 
-router.delete('/:_id', userAuth, noteController.deleteNote);
+router.put('/:_id', userAuth , noteController.updatedNote);
 
-router.put('/update/:_id', userAuth , noteController.updatedNote);
+router.delete('/:_id', userAuth, noteController.deleteNote);
 
 router.put('/isarchive/:_id', userAuth , noteController.isArchivedNote);
 
