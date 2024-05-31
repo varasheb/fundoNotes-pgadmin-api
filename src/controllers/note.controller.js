@@ -40,7 +40,8 @@ export const getAllNotes = async (req,res) => {
 export const getNote = async (req, res) => {
   try {
     const noteId=req.params._id;
-    const data = await NoteService.getNote(noteId);
+    const userId=res.locals.userId;
+    const data = await NoteService.getNote(noteId,userId);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       data: data,

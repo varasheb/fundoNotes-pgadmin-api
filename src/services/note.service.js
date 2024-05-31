@@ -20,15 +20,23 @@ export const getAllNotes = async (userId) => {
     });
 }
 
-export const getNote = async (id) => {
-    return await Note.findByPk(id);
+export const getNote = async (noteId,userId) => {
+    const note = await Note.findOne({
+        where: { createdBy: userId, id: noteId }
+    });
+    if (!note) {
+        throw new Error('User Id is Invalid');
+    }
+    return note;
 }
 
-export const deleteNote = async (id) => {
-    const note = await Note.findByPk(id);
+export const deleteNote = async (noteId,userId) => {
+    const note = await Note.findOne({
+        where: { createdBy: userId, id: noteId }
+    });
     if (note && note.trashed) {
         return await Note.destroy({
-            where: { id: id }
+            where: { id: noteId }
         });
     } else {
         throw new Error("Note is not trashed");
