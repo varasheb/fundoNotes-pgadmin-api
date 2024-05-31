@@ -76,8 +76,9 @@ export const updatedNote = async (req, res) => {
   try {
     const noteId=req.params._id;
     const body=req.body;
+    const userId=res.locals.userId;
 
-    const data = await NoteService.updateNote(noteId,body);
+    const data = await NoteService.updateNote(noteId,userId,body);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
       data: data,

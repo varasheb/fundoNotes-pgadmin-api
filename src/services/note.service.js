@@ -6,13 +6,16 @@ export const createNote = async (body) => {
     return await Note.create(body);
 }
 
-export const updateNote = async (noteId, body) => {
-    return await Note.update(body, {
-        where: { id: noteId },
-        returning: true,
-        plain: true
-    }).then(result => result[1]); // Sequelize returns an array with affected rows count and the updated object
-}
+export const updateNote = async (noteId, userId, body) => {
+    const [, [updatedNote]] = await Note.update(body, {
+        where: { createdBy: userId, id: noteId },
+        returning: true
+    });
+    if (!updatedNote) {
+        throw new Error('NoteId is Invalid');
+    }
+    return updatedNote;
+};
 
 export const getAllNotes = async (userId) => {
     return await Note.findAll({
