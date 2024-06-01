@@ -58,7 +58,8 @@ export const getNote = async (req, res) => {
 export const deleteNote = async (req, res) => {
   try {
     const noteId=req.params._id;
-    const data = await NoteService.deleteNote(noteId);
+    const userId=res.locals.userId;
+    const data = await NoteService.deleteNote(noteId,userId);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,

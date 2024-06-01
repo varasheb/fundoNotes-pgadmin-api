@@ -3,15 +3,10 @@ import request from 'supertest';
 import app from '../../src/index';
 import sequelize, { DataTypes } from '../../src/config/database';
 
-const User = require('../../src/models/user.model')(sequelize, DataTypes);
 
 describe('User APIs Test', () => {
     let userId;
     let token;
-
-    before(async () => {
-        await User.destroy({ where: {} });
-      });
 
   describe('POST /api/v1/users', () => {
     it('should register a new user', (done) => {
