@@ -1,11 +1,10 @@
 import HttpStatus from 'http-status-codes';
 import * as NoteService from '../services/note.service';
 
-
 export const createNote = async (req, res) => {
   try {
-    const {body}=req
-    body.createdBy=res.locals.userId;
+    const { body } = req;
+    body.createdBy = res.locals.userId;
     const data = await NoteService.createNote(body);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
@@ -20,8 +19,7 @@ export const createNote = async (req, res) => {
   }
 };
 
-
-export const getAllNotes = async (req,res) => {
+export const getAllNotes = async (req, res) => {
   try {
     const data = await NoteService.getAllNotes(res.locals.userId);
     res.status(HttpStatus.OK).json({
@@ -39,9 +37,9 @@ export const getAllNotes = async (req,res) => {
 
 export const getNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId=res.locals.userId;
-    const data = await NoteService.getNote(noteId,userId);
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
+    const data = await NoteService.getNote(noteId, userId);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,
@@ -57,9 +55,9 @@ export const getNote = async (req, res) => {
 
 export const deleteNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId=res.locals.userId;
-    const data = await NoteService.deleteNote(noteId,userId);
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
+    const data = await NoteService.deleteNote(noteId, userId);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,
@@ -75,11 +73,11 @@ export const deleteNote = async (req, res) => {
 
 export const updatedNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const body=req.body;
-    const userId=res.locals.userId;
+    const noteId = req.params._id;
+    const body = req.body;
+    const userId = res.locals.userId;
 
-    const data = await NoteService.updateNote(noteId,userId,body);
+    const data = await NoteService.updateNote(noteId, userId, body);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,
@@ -95,10 +93,10 @@ export const updatedNote = async (req, res) => {
 
 export const isArchivedNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId =res.locals.userId;
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
 
-    const data = await NoteService.isArchivedNote(userId,noteId);
+    const data = await NoteService.isArchivedNote(userId, noteId);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,
@@ -114,10 +112,10 @@ export const isArchivedNote = async (req, res) => {
 
 export const isTrashedNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId =res.locals.userId;
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
 
-    const data = await NoteService.isTrashedNote(userId,noteId);
+    const data = await NoteService.isTrashedNote(userId, noteId);
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,

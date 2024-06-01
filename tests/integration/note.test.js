@@ -39,17 +39,17 @@ describe('Note APIs Test', () => {
 
   it('should create a new note', async () => {
     const newNote = {
-      title: "To do",
-      description: "to do testing of all apis"
+      title: 'To do',
+      description: 'to do testing of all apis'
     };
     const res = await request(app)
       .post('/api/v1/notes/')
       .send(newNote)
-      .set('Authorization', `Bearer ${token}`); 
+      .set('Authorization', `Bearer ${token}`);
     expect(res.statusCode).to.equal(201);
     expect(res.body).to.be.an('object');
     expect(res.body.message).to.equal('Note created successfully');
-    noteId= res.body.data.id;
+    noteId = res.body.data.id;
   });
 
   it('should get all the notes for user', async () => {
@@ -71,14 +71,11 @@ describe('Note APIs Test', () => {
     expect(res.body.data.id).to.equal(noteId);
   });
 
-
-
-
   it('should update the existing notes', async () => {
     const updatedNote = {
-      title: "to update",
-      description: "to do testing of update api",
-      color:"orange"
+      title: 'to update',
+      description: 'to do testing of update api',
+      color: 'orange'
     };
     const res = await request(app)
       .put(`/api/v1/notes/${noteId}`)
@@ -89,7 +86,7 @@ describe('Note APIs Test', () => {
     expect(res.body.message).to.equal('Note Updated successfully');
   });
 
-it('should make the note Trashed', async () => {
+  it('should make the note Trashed', async () => {
     const res = await request(app)
       .put(`/api/v1/notes/istrash/${noteId}`)
       .set('Authorization', `Bearer ${token}`);
@@ -115,5 +112,4 @@ it('should make the note Trashed', async () => {
     expect(res.body).to.be.an('object');
     expect(res.body.message).to.equal('Deleted note sucefully');
   });
-
 });
