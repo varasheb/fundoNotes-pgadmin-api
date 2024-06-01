@@ -19,6 +19,7 @@ describe('User Service Function Test', () => {
 
       const result = await UserService.signInUser (body);
       expect(result).to.be.an('object');
+      expect(result.email).to.equals(user.email);
     });
     it('should throw an error if email already exist', async () => {
 

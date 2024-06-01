@@ -18,7 +18,7 @@ describe('User APIs Test', () => {
       const newUser = {
         firstName: 'testname',
         lastName: 'testlastname',
-        email: 'varkanthi456.job@gmail.com',
+        email: 'testmail@gmail.com',
         password: 'Password@123'
       };
 
@@ -38,7 +38,7 @@ describe('User APIs Test', () => {
   describe('POST /api/v1/users/login', () => {
     it('should log in the user', (done) => {
       const userCredentials = {
-        email: 'varkanthi456.job@gmail.com',
+        email: 'testmail@gmail.com',
         password: 'Password@123'
       };
 
@@ -55,39 +55,4 @@ describe('User APIs Test', () => {
     });
   });
 
-//   describe('POST /api/v1/users/forgotpassword', () => {
-//     it('should send a password reset email', (done) => {
-//       const email = {
-//         email: 'varkanthi456.job@gmail.com'
-//       };
-
-//       request(app)
-//         .post('/api/v1/users/forgotpassword')
-//         .send(email)
-//         .end((err, res) => {
-//           expect(res.statusCode).to.equal(200);
-//           expect(res.body.message).to.equal('Password reset email sent');
-//           token = res.body.token;
-//           done();
-//         });
-//     });
-//   });
-
-//   describe('POST /api/v1/users/resetPassword', () => {
-//     it('should reset the user password', (done) => {
-//       const resetPassword = {
-//         newPassword: 'NewPassword@123'
-//       };
-
-//       request(app)
-//         .post('/api/v1/users/resetPassword')
-//         .send(resetPassword)
-//         .set('Authorization', `Bearer ${token}`)
-//         .end((err, res) => {
-//           expect(res.statusCode).to.equal(200);
-//           expect(res.body.message).to.equal('Password reset successful');
-//           done();
-//         });
-//     });
-//   });
 });

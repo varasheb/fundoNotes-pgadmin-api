@@ -24,8 +24,8 @@ export const createNote = async (req, res) => {
 export const getAllNotes = async (req,res) => {
   try {
     const data = await NoteService.getAllNotes(res.locals.userId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'fetched notes sucefully'
     });
@@ -42,8 +42,8 @@ export const getNote = async (req, res) => {
     const noteId=req.params._id;
     const userId=res.locals.userId;
     const data = await NoteService.getNote(noteId,userId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'fetched note sucefully'
     });
@@ -59,8 +59,8 @@ export const deleteNote = async (req, res) => {
   try {
     const noteId=req.params._id;
     const data = await NoteService.deleteNote(noteId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'Deleted note sucefully'
     });
@@ -79,8 +79,8 @@ export const updatedNote = async (req, res) => {
     const userId=res.locals.userId;
 
     const data = await NoteService.updateNote(noteId,userId,body);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'Note Updated successfully'
     });
@@ -98,8 +98,8 @@ export const isArchivedNote = async (req, res) => {
     const userId =res.locals.userId;
 
     const data = await NoteService.isArchivedNote(userId,noteId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'Note Archived successfully'
     });
@@ -117,8 +117,8 @@ export const isTrashedNote = async (req, res) => {
     const userId =res.locals.userId;
 
     const data = await NoteService.isTrashedNote(userId,noteId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'Note Trached successfully'
     });

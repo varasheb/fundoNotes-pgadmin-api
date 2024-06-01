@@ -22,6 +22,7 @@ export const userLogin= async (req, res) => {
   try {
     const data = await UserService.userLogin(req.body);
     res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       success: true,
       message: 'User loggedIn successfully',
       data: data.user,
@@ -42,6 +43,7 @@ export const forgetPassword= async (req, res) => {
     const data = await UserService.forgetPassword(req.body);
 
     res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       success: true,
       message: 'Mail sent  Sucefully',
       user: data.user,
@@ -64,6 +66,7 @@ export const resetPassword= async (req, res) => {
     const data = await UserService.resetPassword(userId,password);
 
     res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       success: true,
       message: 'Reset password Sucefully',
       data: data,
