@@ -41,11 +41,6 @@ const logger = winston.createLogger({
 const morganLogger = winston.createLogger({
   format: format.combine(format.simple()),
   transports: [
-    new winston.transports.File({
-      filename: 'logs/requests/all.log',
-      level: 'debug',
-      handleExceptions: true
-    }),
     new winston.transports.Console({
       level: 'debug',
       format: format.combine(
@@ -55,6 +50,13 @@ const morganLogger = winston.createLogger({
       ),
       handleExceptions: true
     }),
+    new winston.transports.DailyRotateFile({
+      maxFiles: '14d',
+      level: 'info',
+      dirname: 'logs/requests',
+      datePattern: 'YYYY-MM-DD',
+      filename: '%DATE%.log'
+    })
   ]
 });
 
