@@ -1,11 +1,10 @@
 import HttpStatus from 'http-status-codes';
 import * as NoteService from '../services/note.service';
 
-
 export const createNote = async (req, res) => {
   try {
-    const {body}=req
-    body.createdBy=res.locals.userId;
+    const { body } = req;
+    body.createdBy = res.locals.userId;
     const data = await NoteService.createNote(body);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
@@ -20,12 +19,11 @@ export const createNote = async (req, res) => {
   }
 };
 
-
-export const getAllNotes = async (req,res) => {
+export const getAllNotes = async (req, res) => {
   try {
     const data = await NoteService.getAllNotes(res.locals.userId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'fetched notes sucefully'
     });
@@ -39,11 +37,11 @@ export const getAllNotes = async (req,res) => {
 
 export const getNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId=res.locals.userId;
-    const data = await NoteService.getNote(noteId,userId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
+    const data = await NoteService.getNote(noteId, userId);
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'fetched note sucefully'
     });
@@ -57,12 +55,13 @@ export const getNote = async (req, res) => {
 
 export const deleteNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const data = await NoteService.deleteNote(noteId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
+    const data = await NoteService.deleteNote(noteId, userId);
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
-      message: 'Deleted note sucefully'
+      message: 'Deleted note successfully'
     });
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
@@ -74,13 +73,13 @@ export const deleteNote = async (req, res) => {
 
 export const updatedNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const body=req.body;
-    const userId=res.locals.userId;
+    const noteId = req.params._id;
+    const body = req.body;
+    const userId = res.locals.userId;
 
-    const data = await NoteService.updateNote(noteId,userId,body);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    const data = await NoteService.updateNote(noteId, userId, body);
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'Note Updated successfully'
     });
@@ -94,12 +93,12 @@ export const updatedNote = async (req, res) => {
 
 export const isArchivedNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId =res.locals.userId;
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
 
-    const data = await NoteService.isArchivedNote(userId,noteId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    const data = await NoteService.isArchivedNote(userId, noteId);
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
       message: 'Note Archived successfully'
     });
@@ -113,14 +112,14 @@ export const isArchivedNote = async (req, res) => {
 
 export const isTrashedNote = async (req, res) => {
   try {
-    const noteId=req.params._id;
-    const userId =res.locals.userId;
+    const noteId = req.params._id;
+    const userId = res.locals.userId;
 
-    const data = await NoteService.isTrashedNote(userId,noteId);
-    res.status(HttpStatus.CREATED).json({
-      code: HttpStatus.CREATED,
+    const data = await NoteService.isTrashedNote(userId, noteId);
+    res.status(HttpStatus.OK).json({
+      code: HttpStatus.OK,
       data: data,
-      message: 'Note Trached successfully'
+      message: 'Note Trashed successfully'
     });
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
