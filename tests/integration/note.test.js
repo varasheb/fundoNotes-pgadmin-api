@@ -10,7 +10,7 @@ const Note = require('../../src/models/note.model')(sequelize, DataTypes);
 describe('Note APIs Test', () => {
   let token;
   let noteId;
-
+  let userId;
   before(async () => {
     await User.destroy({ where: {} });
     await Note.destroy({ where: {} });
@@ -28,6 +28,7 @@ describe('Note APIs Test', () => {
       const result = await UserService.signInUser(body);
       expect(result).to.be.an('object');
       expect(result.email).to.equal(body.email);
+      userId=result.id;
     });
 
     it('should return user and token if email and password are correct', async () => {
@@ -56,6 +57,19 @@ describe('Note APIs Test', () => {
       expect(res.body.message).to.equal('Note created successfully');
       noteId = res.body.data.id;
     });
+
+    it('should throw error if user is not logged in', async () => {
+      const newNote = {
+        title: 'To do',
+        description: 'to do testing of all apis'
+      };
+      const res = await request(app)
+        .post('/api/v1/notes/')
+        .send(newNote);
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
+    });
   });
 
   describe('Get All Notes (GET /api/v1/notes/)', () => {
@@ -63,10 +77,18 @@ describe('Note APIs Test', () => {
       const res = await request(app)
         .get('/api/v1/notes/')
         .set('Authorization', `Bearer ${token}`);
-
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('object');
       expect(res.body.data[0].id).to.equal(noteId);
+      expect(res.body.data[0].createdBy).to.equal(userId);
+    });
+
+    it('should throw error if user is not logged in', async () => {
+      const res = await request(app)
+        .get('/api/v1/notes/');
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
     });
   });
 
@@ -78,6 +100,15 @@ describe('Note APIs Test', () => {
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('object');
       expect(res.body.data.id).to.equal(noteId);
+      expect(res.body.data.createdBy).to.equal(userId);
+    });
+
+    it('should throw error if user is not logged in', async () => {
+      const res = await request(app)
+        .get(`/api/v1/notes/${noteId}`);
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
     });
   });
 
@@ -94,7 +125,22 @@ describe('Note APIs Test', () => {
         .set('Authorization', `Bearer ${token}`);
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('object');
+      expect(res.body.data.createdBy).to.equal(userId);
       expect(res.body.message).to.equal('Note Updated successfully');
+    });
+
+    it('should throw error if user is not logged in', async () => {
+      const updatedNote = {
+        title: 'to update',
+        description: 'to do testing of update api',
+        color: 'orange'
+      };
+      const res = await request(app)
+        .put(`/api/v1/notes/${noteId}`)
+        .send(updatedNote);
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
     });
   });
 
@@ -107,6 +153,14 @@ describe('Note APIs Test', () => {
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Note Trashed successfully');
     });
+
+    it('should throw error if user is not logged in', async () => {
+      const res = await request(app)
+        .put(`/api/v1/notes/istrash/${noteId}`);
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
+    });
   });
 
   describe('Archive Note (PUT /api/v1/notes/isarchive/:id)', () => {
@@ -118,6 +172,14 @@ describe('Note APIs Test', () => {
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Note Archived successfully');
     });
+
+    it('should throw error if user is not logged in', async () => {
+      const res = await request(app)
+        .put(`/api/v1/notes/isarchive/${noteId}`);
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
+    });
   });
 
   describe('Delete Note (DELETE /api/v1/notes/:id)', () => {
@@ -128,6 +190,14 @@ describe('Note APIs Test', () => {
       expect(res.statusCode).to.equal(200);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Deleted note successfully');
+    });
+
+    it('should throw error if user is not logged in', async () => {
+      const res = await request(app)
+        .delete(`/api/v1/notes/${noteId}`);
+      expect(res.statusCode).to.equal(401);
+      expect(res.body).to.be.an('object');
+      expect(res.body.message).to.equal('Authentication required');
     });
   });
 });
