@@ -61,7 +61,7 @@ export const deleteNote = async (req, res) => {
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,
-      message: 'Deleted note sucefully'
+      message: 'Deleted note successfully'
     });
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
@@ -119,7 +119,7 @@ export const isTrashedNote = async (req, res) => {
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       data: data,
-      message: 'Note Trached successfully'
+      message: 'Note Trashed successfully'
     });
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
