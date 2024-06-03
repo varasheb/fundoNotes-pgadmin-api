@@ -16,6 +16,7 @@ const redisClient = redis.createClient({
 });
 
 const populateCacheWithAllUsers = async () => {
+  await redisClient.flushdb();
   const allUsers = await User.findAll();
   allUsers.forEach(user => {
     redisClient.set(`user:${user.email}`, JSON.stringify(user));
