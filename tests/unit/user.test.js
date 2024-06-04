@@ -6,11 +6,10 @@ import redis from 'ioredis';
 const User = require('../../src/models/user.model')(sequelize, DataTypes);
 const Note = require('../../src/models/note.model')(sequelize, DataTypes);
 const redisClient = redis.createClient({
-  url: 'redis://localhost:6379' 
+  url: 'redis://localhost:6379'
 });
 
 describe('User Service Function Test', () => {
-  
   before(async () => {
     await User.destroy({ where: {} });
     await Note.destroy({ where: {} });
@@ -20,7 +19,7 @@ describe('User Service Function Test', () => {
     await User.destroy({ where: {} });
     await Note.destroy({ where: {} });
     await redisClient.flushdb();
-  }); 
+  });
 
   describe('signInUser Function Tests', () => {
     it('signInUser() should return user object', async () => {

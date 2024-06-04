@@ -2,8 +2,8 @@ import { expect } from 'chai';
 import * as noteService from '../../src/services/note.service';
 
 describe('Note Service unit Testing', () => {
-const userId=1;
-let noteId;
+  const userId = 1;
+  let noteId;
   describe('createNote', () => {
     it('should create a new note', async () => {
       const newNote = {
@@ -13,13 +13,16 @@ let noteId;
       };
       const createdNote = await noteService.createNote(newNote);
       expect(createdNote).to.include(newNote);
-      noteId=createdNote.id;
+      noteId = createdNote.id;
     });
   });
 
   describe('updateNote', () => {
     it('should update an existing note', async () => {
-      const updatedNote = await noteService.updateNote(noteId, userId, { title: 'Updated Title',color:'orange' });
+      const updatedNote = await noteService.updateNote(noteId, userId, {
+        title: 'Updated Title',
+        color: 'orange'
+      });
       expect(updatedNote.title).to.equal('Updated Title');
       expect(updatedNote.color).to.equal('orange');
     });
@@ -55,7 +58,6 @@ let noteId;
       }
     });
   });
-
 
   describe('isArchivedNote', () => {
     it('should toggle the archived status of a note', async () => {

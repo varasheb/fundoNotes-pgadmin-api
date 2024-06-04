@@ -3,7 +3,7 @@ import * as UserService from '../services/user.service';
 
 export const signInUser = async (req, res) => {
   try {
-    const body=req.body
+    const body = req.body;
     const data = await UserService.signInUser(body);
     res.status(HttpStatus.CREATED).json({
       code: HttpStatus.CREATED,
@@ -18,7 +18,7 @@ export const signInUser = async (req, res) => {
   }
 };
 
-export const userLogin= async (req, res) => {
+export const userLogin = async (req, res) => {
   try {
     const data = await UserService.userLogin(req.body);
     res.status(HttpStatus.OK).json({
@@ -28,17 +28,15 @@ export const userLogin= async (req, res) => {
       data: data.user,
       token: data.token
     });
-
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
       code: HttpStatus.BAD_REQUEST,
       message: error.message
     });
   }
-  
-}
+};
 
-export const forgetPassword= async (req, res) => {
+export const forgetPassword = async (req, res) => {
   try {
     const data = await UserService.forgetPassword(req.body);
 
@@ -48,34 +46,32 @@ export const forgetPassword= async (req, res) => {
       message: 'Mail sent  Sucefully',
       user: data.user,
       token: data.token,
-      result:data.result.messageId
+      result: data.result.messageId
     });
-
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
       code: HttpStatus.BAD_REQUEST,
       message: error.message
     });
   }
-}
+};
 
-export const resetPassword= async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
-    const {userId} = res.locals;
-    const {password}=req.body;
-    const data = await UserService.resetPassword(userId,password);
+    const { userId } = res.locals;
+    const { password } = req.body;
+    const data = await UserService.resetPassword(userId, password);
 
     res.status(HttpStatus.OK).json({
       code: HttpStatus.OK,
       success: true,
       message: 'Reset password Sucefully',
-      data: data,
+      data: data
     });
-
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
       code: HttpStatus.BAD_REQUEST,
       message: error.message
     });
   }
-}
+};

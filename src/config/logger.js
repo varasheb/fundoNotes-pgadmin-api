@@ -7,7 +7,7 @@ import 'winston-daily-rotate-file';
 const logger = winston.createLogger({
   format: format.combine(format.timestamp(), format.simple()),
   colorize: true,
-  
+
   transports: [
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -31,7 +31,9 @@ const logger = winston.createLogger({
       format: format.combine(
         format.colorize(),
         format.cli(),
-        format.printf((info)=>` ${info.level}: [${info.timestamp}] ${info.message}`)
+        format.printf(
+          (info) => `${info.level}: [${info.timestamp}] ${info.message}`
+        )
       ),
       handleExceptions: true
     })
@@ -46,7 +48,7 @@ const morganLogger = winston.createLogger({
       format: format.combine(
         format.colorize(),
         format.cli(),
-        format.printf((info)=>`${info.level}: ${info.message}`)
+        format.printf((info) => `${info.level}: ${info.message}`)
       ),
       handleExceptions: true
     }),
@@ -65,6 +67,5 @@ export const logStream = {
     morganLogger.info(message.toString());
   }
 };
-
 
 export default logger;

@@ -26,7 +26,6 @@ describe('Note APIs Test', () => {
     await redisClient.flushdb();
   });
   describe('User Operations for Testing Notes', () => {
-
     it('should create a new user in database for notes testing', async () => {
       const body = {
         firstName: 'test',
@@ -37,7 +36,7 @@ describe('Note APIs Test', () => {
       const result = await UserService.signInUser(body);
       expect(result).to.be.an('object');
       expect(result.email).to.equal(body.email);
-      userId=result.id;
+      userId = result.id;
     });
 
     it('should return user and token if email and password are correct', async () => {
@@ -72,9 +71,7 @@ describe('Note APIs Test', () => {
         title: 'To do',
         description: 'to do testing of all apis'
       };
-      const res = await request(app)
-        .post('/api/v1/notes/')
-        .send(newNote);
+      const res = await request(app).post('/api/v1/notes/').send(newNote);
       expect(res.statusCode).to.equal(401);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Authentication required');
@@ -93,8 +90,7 @@ describe('Note APIs Test', () => {
     });
 
     it('should throw error if user is not logged in', async () => {
-      const res = await request(app)
-        .get('/api/v1/notes/');
+      const res = await request(app).get('/api/v1/notes/');
       expect(res.statusCode).to.equal(401);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Authentication required');
@@ -113,8 +109,7 @@ describe('Note APIs Test', () => {
     });
 
     it('should throw error if user is not logged in', async () => {
-      const res = await request(app)
-        .get(`/api/v1/notes/${noteId}`);
+      const res = await request(app).get(`/api/v1/notes/${noteId}`);
       expect(res.statusCode).to.equal(401);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Authentication required');
@@ -164,8 +159,7 @@ describe('Note APIs Test', () => {
     });
 
     it('should throw error if user is not logged in', async () => {
-      const res = await request(app)
-        .put(`/api/v1/notes/istrash/${noteId}`);
+      const res = await request(app).put(`/api/v1/notes/istrash/${noteId}`);
       expect(res.statusCode).to.equal(401);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Authentication required');
@@ -183,8 +177,7 @@ describe('Note APIs Test', () => {
     });
 
     it('should throw error if user is not logged in', async () => {
-      const res = await request(app)
-        .put(`/api/v1/notes/isarchive/${noteId}`);
+      const res = await request(app).put(`/api/v1/notes/isarchive/${noteId}`);
       expect(res.statusCode).to.equal(401);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Authentication required');
@@ -202,8 +195,7 @@ describe('Note APIs Test', () => {
     });
 
     it('should throw error if user is not logged in', async () => {
-      const res = await request(app)
-        .delete(`/api/v1/notes/${noteId}`);
+      const res = await request(app).delete(`/api/v1/notes/${noteId}`);
       expect(res.statusCode).to.equal(401);
       expect(res.body).to.be.an('object');
       expect(res.body.message).to.equal('Authentication required');

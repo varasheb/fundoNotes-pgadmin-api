@@ -62,7 +62,9 @@ describe('User APIs Test', () => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(400);
           expect(res.body).to.be.an('object');
-          expect(res.body.message).to.equal('User with this email already exists');
+          expect(res.body.message).to.equal(
+            'User with this email already exists'
+          );
           done();
         });
     });

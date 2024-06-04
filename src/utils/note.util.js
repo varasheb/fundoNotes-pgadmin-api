@@ -11,7 +11,7 @@ export const getCacheKey = (userId) => `notes:${userId}`;
 export const cacheAllNotes = async (userId) => {
   const notes = await Note.findAll({ where: { createdBy: userId } });
   const cacheKey = getCacheKey(userId);
-  await redisClient.set(cacheKey, JSON.stringify(notes), 'EX', 36000); 
+  await redisClient.set(cacheKey, JSON.stringify(notes), 'EX', 36000);
 };
 
 export const getAllCachedNotes = async (userId) => {
