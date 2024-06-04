@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import sendmail from '../utils/sendEmail';
-import redis from 'ioredis';
+import {populateCacheWithUser,getUserFromCache} from '../utils/user.util'
 
 const User = require('../models/user.model')(sequelize, DataTypes);
 
@@ -11,24 +11,6 @@ dotenv.config();
 const key = process.env.JWT_SECRET_KEY;
 const resetkey = process.env.SECRET_KEY;
 
-const redisClient = redis.createClient({
-  url: 'redis://localhost:6379' 
-});
-
-const populateCacheWithUser = async (email) => {
-  const user = await User.findOne({ where: { email } });
-    redisClient.set(`user:${user.email}`, JSON.stringify(user));
-  
-};
-
-const getUserFromCache = async (email) => {
-  return new Promise((resolve, reject) => {
-    redisClient.get(`user:${email}`, (err, data) => {
-      if (err) reject(err);
-      resolve(data ? JSON.parse(data) : null);
-    });
-  });
-};
 
 export const signInUser = async (body) => {
   const userExists = await User.findOne({ where: { email: body.email } });
