@@ -7,7 +7,7 @@ import sequelize, { DataTypes } from '../../src/config/database';
 const User = require('../../src/models/user.model')(sequelize, DataTypes);
 const Note = require('../../src/models/note.model')(sequelize, DataTypes);
 const redisClient = redis.createClient({
-  url: 'redis://localhost:6379' // Adjust the URL according to your Redis setup
+  url: 'redis://localhost:6379'
 });
 
 describe('User APIs Test', () => {
