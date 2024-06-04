@@ -20,7 +20,11 @@ describe('Note APIs Test', () => {
     await Note.destroy({ where: {} });
     await redisClient.flushdb();
   });
-
+  after(async () => {
+    await User.destroy({ where: {} });
+    await Note.destroy({ where: {} });
+    await redisClient.flushdb();
+  });
   describe('User Operations for Testing Notes', () => {
 
     it('should create a new user in database for notes testing', async () => {

@@ -1,10 +1,26 @@
 import { expect } from 'chai';
 import request from 'supertest';
 import app from '../../src/index';
+import redis from 'ioredis';
+import sequelize, { DataTypes } from '../../src/config/database';
 
+const User = require('../../src/models/user.model')(sequelize, DataTypes);
+const Note = require('../../src/models/note.model')(sequelize, DataTypes);
+const redisClient = redis.createClient({
+  url: 'redis://localhost:6379' // Adjust the URL according to your Redis setup
+});
 
 describe('User APIs Test', () => {
-
+  before(async () => {
+    await User.destroy({ where: {} });
+    await Note.destroy({ where: {} });
+    await redisClient.flushdb();
+  });
+  after(async () => {
+    await User.destroy({ where: {} });
+    await Note.destroy({ where: {} });
+    await redisClient.flushdb();
+  });
   describe('User Registration', () => {
     it('should register a new user', (done) => {
       const newUser = {

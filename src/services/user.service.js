@@ -15,12 +15,10 @@ const redisClient = redis.createClient({
   url: 'redis://localhost:6379' 
 });
 
-const populateCacheWithAllUsers = async () => {
-  await redisClient.flushdb();
-  const allUsers = await User.findAll();
-  allUsers.forEach(user => {
+const populateCacheWithUser = async (email) => {
+  const user = await User.findOne({ where: { email } });
     redisClient.set(`user:${user.email}`, JSON.stringify(user));
-  });
+  
 };
 
 const getUserFromCache = async (email) => {
@@ -33,10 +31,6 @@ const getUserFromCache = async (email) => {
 };
 
 export const signInUser = async (body) => {
-  let cachedUser = await getUserFromCache(body.email);
-  if (cachedUser) {
-    throw new Error('User with this email already exists');
-  }
   const userExists = await User.findOne({ where: { email: body.email } });
   if (userExists) {
     throw new Error('User with this email already exists');
@@ -45,7 +39,7 @@ export const signInUser = async (body) => {
     const data = await User.create(body);
 
     // Store the user data in Redis cache
-    await populateCacheWithAllUsers();
+    await populateCacheWithUser(data.email);
     return data;
   }
 };
@@ -53,15 +47,12 @@ export const signInUser = async (body) => {
 export const userLogin = async ({ email, password }) => {
     let cachedUser = await getUserFromCache(email);
     if (!cachedUser) {
-      const isCacheEmpty = await redisClient.keys('user:*');
-      if (isCacheEmpty.length === 0) {
-        await populateCacheWithAllUsers();
+        await populateCacheWithUser(email);
         cachedUser = await getUserFromCache(email);
-      }
     }
-
+  
     const user = cachedUser || await User.findOne({ where: { email } });
-
+  
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new Error('Invalid email or password');
     }
@@ -73,11 +64,8 @@ export const userLogin = async ({ email, password }) => {
 export const forgetPassword = async ({ email }) => {
   let cachedUser = await getUserFromCache(email);
     if (!cachedUser) {
-      const isCacheEmpty = await redisClient.keys('user:*');
-      if (isCacheEmpty.length === 0) {
-        await populateCacheWithAllUsers();
+        await populateCacheWithUser(email);
         cachedUser = await getUserFromCache(email);
-      }
     }
 
     const user = cachedUser || await User.findOne({ where: { email } });
@@ -95,6 +83,6 @@ export const resetPassword = async (userId, newPassword) => {
   }
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
-  await populateCacheWithAllUsers();
+  await populateCacheWithUser(user.email);
   return user;
 };
