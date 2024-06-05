@@ -2,11 +2,10 @@ import { expect } from 'chai';
 import request from 'supertest';
 import app from '../../src/index';
 import redis from 'ioredis';
-import sequelize, { DataTypes } from '../../src/config/database';
 import * as UserService from '../../src/services/user.service';
 
-const User = require('../../src/models/user.model')(sequelize, DataTypes);
-const Note = require('../../src/models/note.model')(sequelize, DataTypes);
+const { Note, User } = require('../../src/models/association');
+
 const redisClient = redis.createClient({
   url: 'redis://localhost:6379'
 });

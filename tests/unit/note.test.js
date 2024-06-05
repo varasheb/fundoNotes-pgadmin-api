@@ -1,10 +1,25 @@
 import { expect } from 'chai';
 import * as noteService from '../../src/services/note.service';
+import * as UserService from '../../src/services/user.service';
 
 describe('Note Service unit Testing', () => {
-  const userId = 1;
+  let userId;
   let noteId;
+
   describe('createNote', () => {
+    it('should create a new user in database for notes unit testing', async () => {
+      const body = {
+        firstName: 'test',
+        lastName: 'man',
+        email: 'testnote@gmail.com',
+        password: 'Note@123'
+      };
+      const result = await UserService.signInUser(body);
+      expect(result).to.be.an('object');
+      expect(result.email).to.equal(body.email);
+      userId = result.id;
+    });
+
     it('should create a new note', async () => {
       const newNote = {
         title: 'Test Note',
@@ -29,7 +44,7 @@ describe('Note Service unit Testing', () => {
 
     it('should throw an error if the noteId is invalid', async () => {
       try {
-        await noteService.updateNote(999, 1, { title: 'Updated Title' });
+        await noteService.updateNote(999, userId, { title: 'Updated Title' });
       } catch (error) {
         expect(error.message).to.equal('NoteId is Invalid');
       }
@@ -40,6 +55,9 @@ describe('Note Service unit Testing', () => {
     it('should return all notes for a user', async () => {
       const notes = await noteService.getAllNotes(userId);
       expect(notes).to.be.an('array');
+      notes.forEach((note) => {
+        expect(note.createdBy).to.equal(userId);
+      });
     });
   });
 
@@ -52,7 +70,7 @@ describe('Note Service unit Testing', () => {
 
     it('should throw an error if the userId is invalid', async () => {
       try {
-        await noteService.getNote(1, 999);
+        await noteService.getNote(noteId, 999);
       } catch (error) {
         expect(error.message).to.equal('User Id is Invalid');
       }
@@ -67,7 +85,7 @@ describe('Note Service unit Testing', () => {
 
     it('should throw an error if the userId is invalid', async () => {
       try {
-        await noteService.isArchivedNote(999, 1);
+        await noteService.isArchivedNote(999, noteId);
       } catch (error) {
         expect(error.message).to.equal('User Id is Invalid');
       }
@@ -82,22 +100,22 @@ describe('Note Service unit Testing', () => {
 
     it('should throw an error if the userId is invalid', async () => {
       try {
-        await noteService.isTrashedNote(999, 1);
+        await noteService.isTrashedNote(userId, noteId);
       } catch (error) {
         expect(error.message).to.equal('User Id is Invalid');
       }
     });
   });
+
   describe('deleteNote', () => {
     it('should delete a note if it is trashed', async () => {
+      await noteService.isTrashedNote(userId, noteId);
       const deletedNote = await noteService.deleteNote(noteId, userId);
       expect(deletedNote).to.equal(1);
     });
 
     it('should throw an error if the note is not trashed', async () => {
       try {
-        const userId = 1;
-        const noteId = 2;
         await noteService.deleteNote(noteId, userId);
       } catch (error) {
         expect(error.message).to.equal('Note is not trashed');

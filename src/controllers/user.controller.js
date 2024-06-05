@@ -58,7 +58,7 @@ export const forgetPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const { userId } = res.locals;
+    const userId = req.locals.userId;
     const { password } = req.body;
     const data = await UserService.resetPassword(userId, password);
 

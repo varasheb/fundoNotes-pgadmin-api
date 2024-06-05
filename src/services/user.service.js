@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import sendmail from '../utils/sendEmail';
 import { populateCacheWithUser, getUserFromCache } from '../utils/user.util';
 
-const User = require('../models/user.model')(sequelize, DataTypes);
+const { User } = require('../models/association');
 
 dotenv.config();
 const key = process.env.JWT_SECRET_KEY;

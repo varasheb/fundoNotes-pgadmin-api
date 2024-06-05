@@ -1,7 +1,6 @@
 import redis from 'ioredis';
-import sequelize, { DataTypes } from '../config/database';
 
-const User = require('../models/user.model')(sequelize, DataTypes);
+const { User } = require('../models/association');
 
 const redisClient = redis.createClient({
   url: 'redis://localhost:6379'
@@ -9,7 +8,7 @@ const redisClient = redis.createClient({
 
 export const populateCacheWithUser = async (email) => {
   const user = await User.findOne({ where: { email } });
-  redisClient.set(`user:${user.email}`, JSON.stringify(user));
+  redisClient.set(`user:${user.email}`, JSON.stringify(user), 'EX', 36000);
 };
 
 export const getUserFromCache = async (email) => {

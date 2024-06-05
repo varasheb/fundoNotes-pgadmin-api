@@ -1,12 +1,10 @@
 import {
-  getCachedNote,
-  getAllCachedNotes,
   cacheAllNotes,
-  invalidateNotesCache
+  invalidateNotesCache,
+  getNoteFromCache
 } from '../utils/note.util';
-import sequelize, { DataTypes } from '../config/database';
 
-const Note = require('../models/note.model')(sequelize, DataTypes);
+const { Note } = require('../models/association');
 
 export const createNote = async (body) => {
   return await Note.create(body);
@@ -26,20 +24,17 @@ export const updateNote = async (noteId, userId, body) => {
 };
 
 export const getAllNotes = async (userId) => {
-  let notes = await getAllCachedNotes(userId);
-  if (!notes) {
-    await cacheAllNotes(userId);
-    notes = await getAllCachedNotes(userId);
-  }
-  return notes;
+  await cacheAllNotes(userId);
+  return await Note.findAll({
+    where: { createdBy: userId }
+  });
 };
 
 export const getNote = async (noteId, userId) => {
-  let note = await getCachedNote(noteId, userId);
-  if (!note) {
-    await cacheAllNotes(userId);
-    note = await getCachedNote(noteId, userId);
-  }
+  await cacheAllNotes(userId);
+  const note = await Note.findOne({
+    where: { createdBy: userId, id: noteId }
+  });
   if (!note) {
     throw new Error('User Id is Invalid');
   }
@@ -47,10 +42,10 @@ export const getNote = async (noteId, userId) => {
 };
 
 export const deleteNote = async (noteId, userId) => {
-  let note = await getCachedNote(noteId, userId);
+  let note = await getNoteFromCache(noteId, userId);
   if (!note) {
     await cacheAllNotes(userId);
-    note = await getCachedNote(noteId, userId);
+    note = await getNoteFromCache(noteId, userId);
   }
   if (note && note.trashed) {
     await invalidateNotesCache(userId);
@@ -63,10 +58,10 @@ export const deleteNote = async (noteId, userId) => {
 };
 
 export const isArchivedNote = async (userId, noteId) => {
-  let note = await getCachedNote(noteId, userId);
+  let note = await getNoteFromCache(noteId, userId);
   if (!note) {
     await cacheAllNotes(userId);
-    note = await getCachedNote(noteId, userId);
+    note = await getNoteFromCache(noteId, userId);
   }
   if (!note) {
     throw new Error('User Id is Invalid');
@@ -85,10 +80,10 @@ export const isArchivedNote = async (userId, noteId) => {
 };
 
 export const isTrashedNote = async (userId, noteId) => {
-  let note = await getCachedNote(noteId, userId);
+  let note = await getNoteFromCache(noteId, userId);
   if (!note) {
     await cacheAllNotes(userId);
-    note = await getCachedNote(noteId, userId);
+    note = await getNoteFromCache(noteId, userId);
   }
   if (!note) {
     throw new Error('User Id is Invalid');
