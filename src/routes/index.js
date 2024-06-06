@@ -9,7 +9,6 @@ import noteRoute from './note.route';
  * @returns router
  */
 const routes = () => {
-  
   router.use('/users', userRoute);
 
   router.use('/notes', noteRoute);

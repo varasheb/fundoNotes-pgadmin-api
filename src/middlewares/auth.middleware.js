@@ -1,10 +1,9 @@
 import jwt from 'jsonwebtoken';
 import HttpStatus from 'http-status-codes';
 import dotenv from 'dotenv';
-dotenv.config()
+dotenv.config();
 const key = process.env.JWT_SECRET_KEY;
-const resetKey=process.env.SECRET_KEY;
-
+const resetKey = process.env.SECRET_KEY;
 
 export const userAuth = async (req, res, next) => {
   try {
@@ -12,10 +11,9 @@ export const userAuth = async (req, res, next) => {
     if (!bearerToken) {
       throw new Error('Authentication required');
     }
-    bearerToken=bearerToken.split(' ')[1]
-    const {userId}= await jwt.verify(bearerToken, key);
-    res.locals.userId = userId;
-    res.locals.token = bearerToken;
+    bearerToken = bearerToken.split(' ')[1];
+    const { userId } = await jwt.verify(bearerToken, key);
+    req.body.userId = userId;
     next();
   } catch (error) {
     res.status(HttpStatus.UNAUTHORIZED).json({
@@ -31,10 +29,10 @@ export const userResetAuth = async (req, res, next) => {
     if (!bearerToken) {
       throw new Error('Authentication required');
     }
-    bearerToken=bearerToken.split(' ')[1]
-    const {userId}= await jwt.verify(bearerToken,resetKey);
-    res.locals.userId = userId;
-    res.locals.token = bearerToken;
+    bearerToken = bearerToken.split(' ')[1];
+    const { userId } = await jwt.verify(bearerToken, resetKey);
+    req.body.userId = userId;
+    req.body.token = bearerToken;
     next();
   } catch (error) {
     res.status(HttpStatus.UNAUTHORIZED).json({

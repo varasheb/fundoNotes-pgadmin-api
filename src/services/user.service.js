@@ -3,11 +3,11 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import sendmail from '../utils/sendEmail';
+import { populateCacheWithUser, getUserFromCache } from '../utils/user.util';
 
+const { User } = require('../models/association');
 
-const User = require('../models/user.model')(sequelize, DataTypes);
-
-dotenv.config();  
+dotenv.config();
 const key = process.env.JWT_SECRET_KEY;
 const resetkey = process.env.SECRET_KEY;
 
@@ -18,12 +18,20 @@ export const signInUser = async (body) => {
   } else {
     body.password = await bcrypt.hash(body.password, 10);
     const data = await User.create(body);
+
+    await populateCacheWithUser(data.email);
     return data;
   }
 };
 
 export const userLogin = async ({ email, password }) => {
-  const user = await User.findOne({ where: { email } });
+  let cachedUser = await getUserFromCache(email);
+  if (!cachedUser) {
+    await populateCacheWithUser(email);
+    cachedUser = await getUserFromCache(email);
+  }
+
+  const user = cachedUser || (await User.findOne({ where: { email } }));
 
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new Error('Invalid email or password');
@@ -34,8 +42,14 @@ export const userLogin = async ({ email, password }) => {
 };
 
 export const forgetPassword = async ({ email }) => {
-  const user = await User.findOne({ where: { email } });
-  if (!user) throw new Error("This email does not exist");
+  let cachedUser = await getUserFromCache(email);
+  if (!cachedUser) {
+    await populateCacheWithUser(email);
+    cachedUser = await getUserFromCache(email);
+  }
+
+  const user = cachedUser || (await User.findOne({ where: { email } }));
+  if (!user) throw new Error('This email does not exist');
 
   const token = jwt.sign({ userId: user.id }, resetkey, { expiresIn: '10m' });
   const result = await sendmail(user.email, token);
@@ -49,5 +63,6 @@ export const resetPassword = async (userId, newPassword) => {
   }
   user.password = await bcrypt.hash(newPassword, 10);
   await user.save();
+  await populateCacheWithUser(user.email);
   return user;
 };

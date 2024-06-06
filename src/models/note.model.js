@@ -17,7 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       createdBy: DataTypes.INTEGER,
       color: {
-        type:DataTypes.STRING ,defaultValue:"white"},
+        type: DataTypes.STRING,
+        defaultValue: 'white'
+      },
       archived: {
         type: DataTypes.BOOLEAN,
         defaultValue: false

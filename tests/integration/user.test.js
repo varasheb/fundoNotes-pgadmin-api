@@ -1,10 +1,26 @@
 import { expect } from 'chai';
 import request from 'supertest';
 import app from '../../src/index';
+import redis from 'ioredis';
+import sequelize, { DataTypes } from '../../src/config/database';
 
+const User = require('../../src/models/user.model')(sequelize, DataTypes);
+const Note = require('../../src/models/note.model')(sequelize, DataTypes);
+const redisClient = redis.createClient({
+  url: 'redis://localhost:6379'
+});
 
 describe('User APIs Test', () => {
-
+  before(async () => {
+    await User.destroy({ where: {} });
+    await Note.destroy({ where: {} });
+    await redisClient.flushdb();
+  });
+  after(async () => {
+    await User.destroy({ where: {} });
+    await Note.destroy({ where: {} });
+    await redisClient.flushdb();
+  });
   describe('User Registration', () => {
     it('should register a new user', (done) => {
       const newUser = {
@@ -46,7 +62,9 @@ describe('User APIs Test', () => {
           if (err) return done(err);
           expect(res.statusCode).to.equal(400);
           expect(res.body).to.be.an('object');
-          expect(res.body.message).to.equal('User with this email already exists');
+          expect(res.body.message).to.equal(
+            'User with this email already exists'
+          );
           done();
         });
     });
