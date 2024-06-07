@@ -1,9 +1,9 @@
-import sequelize, { DataTypes } from '../config/database';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import sendmail from '../utils/sendEmail';
+import {sendResetPasswordEmail} from '../utils/sendEmail';
 import { populateCacheWithUser, getUserFromCache } from '../utils/user.util';
+import { publish} from '../config/rabbitmq'
 
 const { User } = require('../models/association');
 
@@ -18,8 +18,10 @@ export const signInUser = async (body) => {
   } else {
     body.password = await bcrypt.hash(body.password, 10);
     const data = await User.create(body);
-
+    
     await populateCacheWithUser(data.email);
+    const message = JSON.stringify(data);
+    await publish('User',message)
     return data;
   }
 };
@@ -52,7 +54,7 @@ export const forgetPassword = async ({ email }) => {
   if (!user) throw new Error('This email does not exist');
 
   const token = jwt.sign({ userId: user.id }, resetkey, { expiresIn: '10m' });
-  const result = await sendmail(user.email, token);
+  const result = await sendResetPasswordEmail(user.email, token);
   return { user, token, result };
 };
 

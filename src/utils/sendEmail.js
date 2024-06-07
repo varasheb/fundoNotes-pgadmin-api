@@ -30,7 +30,7 @@ const transporter = nodemailer.createTransport({
 });
 
 // Email sending function
-async function sendEmail(email, token) {
+async function sendResetPasswordEmail(email, token) {
   const mailOptions = {
     from: mail,
     to: email,
@@ -52,4 +52,26 @@ async function sendEmail(email, token) {
   }
 }
 
-export default sendEmail;
+async function sendNotification(data) {
+  const mailOptions = {
+    from: mail,
+    to: data.email,
+    subject: 'Registration Successful',
+    html:  `<h1>Welcome to Our Service</h1>
+    <p>Hi ${data.firstName},</p>
+    <p>Thank you for registering with us. Your account has been successfully created.</p>
+    <p>Your token: ${data.token}</p>`
+  };
+
+  try {
+    const result = await transporter.sendMail(mailOptions);
+    console.log('email result++++++++++++++++++++++++++++++++++++',result);
+    logger.info(`Email sent to ${data.email}`);
+    return result;
+  } catch (error) {
+    logger.error(`Error sending email to ${data.email}: ${error.message}`);
+    throw error;
+  }
+}
+
+module.exports = { sendResetPasswordEmail, sendNotification };;
