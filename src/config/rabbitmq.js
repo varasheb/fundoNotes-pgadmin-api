@@ -1,6 +1,7 @@
-import amqplib from 'amqplib'
+import amqplib from 'amqplib';
+import logger from '../config/logger';
 
-const RABBITMQ_URL = 'amqp://localhost'; 
+const RABBITMQ_URL = 'amqp://localhost';
 
 async function connect() {
   try {
@@ -8,7 +9,7 @@ async function connect() {
     const channel = await connection.createChannel();
     return { connection, channel };
   } catch (error) {
-    console.error('Failed to connect to RabbitMQ', error);
+    logger.error('Failed to connect to RabbitMQ', error);
     throw error;
   }
 }
@@ -17,18 +18,20 @@ async function publish(queue, message) {
   const { connection, channel } = await connect();
   await channel.assertQueue(queue);
   channel.sendToQueue(queue, Buffer.from(message));
-  console.log(`Message sent to queue ${queue}: ${message}`);
+  logger.info(`Message sent to queue ${queue}: ${message}`);
   setTimeout(() => {
     connection.close();
   }, 500);
 }
 
-async function consume(queue,handleEmailQueue) {
+async function consume(queue, handleEmailQueue) {
   const { connection, channel } = await connect();
   await channel.assertQueue(queue);
   channel.consume(queue, (msg) => {
     if (msg !== null) {
-      console.log(`Message received from queue ${queue}: ${msg.content.toString()}`);
+      logger.info(
+        `Message received from queue ${queue}: ${msg.content.toString()}`
+      );
       handleEmailQueue(JSON.parse(msg.content.toString()));
       channel.ack(msg);
     }

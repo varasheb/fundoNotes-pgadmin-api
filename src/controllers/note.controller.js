@@ -65,7 +65,6 @@ export const deleteNote = async (req, res) => {
       data: data,
       message: 'Deleted note successfully'
     });
-    
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
       code: HttpStatus.BAD_REQUEST,

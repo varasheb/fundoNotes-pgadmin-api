@@ -57,7 +57,7 @@ async function sendNotification(data) {
     from: mail,
     to: data.email,
     subject: 'Registration Successful',
-    html:  `<h1>Welcome to Our Service</h1>
+    html: `<h1>Welcome to Our Service</h1>
     <p>Hi ${data.firstName},</p>
     <p>Thank you for registering with us. Your account has been successfully created.</p>
     <p>Your token: ${data.token}</p>`
@@ -65,7 +65,6 @@ async function sendNotification(data) {
 
   try {
     const result = await transporter.sendMail(mailOptions);
-    console.log('email result++++++++++++++++++++++++++++++++++++',result);
     logger.info(`Email sent to ${data.email}`);
     return result;
   } catch (error) {
@@ -74,4 +73,4 @@ async function sendNotification(data) {
   }
 }
 
-module.exports = { sendResetPasswordEmail, sendNotification };;
+module.exports = { sendResetPasswordEmail, sendNotification };

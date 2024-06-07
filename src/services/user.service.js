@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import {sendResetPasswordEmail} from '../utils/sendEmail';
+import { sendResetPasswordEmail } from '../utils/sendEmail';
 import { populateCacheWithUser, getUserFromCache } from '../utils/user.util';
-import { publish} from '../config/rabbitmq'
+import { publish } from '../config/rabbitmq';
 
 const { User } = require('../models/association');
 
@@ -18,10 +18,10 @@ export const signInUser = async (body) => {
   } else {
     body.password = await bcrypt.hash(body.password, 10);
     const data = await User.create(body);
-    
+
     await populateCacheWithUser(data.email);
     const message = JSON.stringify(data);
-    await publish('User',message)
+    await publish('User', message);
     return data;
   }
 };

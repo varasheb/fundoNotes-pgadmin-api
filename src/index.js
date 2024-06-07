@@ -18,7 +18,7 @@ import morgan from 'morgan';
 import swaggerUi from 'swagger-ui-express';
 import swaggerDocument from './utils/swagger.json';
 
-import {startEmailConsumer} from '../src/utils/emailConsumer'
+import { startEmailConsumer } from '../src/utils/emailConsumer';
 
 const app = express();
 const host = process.env.APP_HOST;
