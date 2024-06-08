@@ -59,8 +59,7 @@ async function sendNotification(data) {
     subject: 'Registration Successful',
     html: `<h1>Welcome to Our Service</h1>
     <p>Hi ${data.firstName},</p>
-    <p>Thank you for registering with us. Your account has been successfully created.</p>
-    <p>Your token: ${data.token}</p>`
+    <p>Thank you for registering with us. Your account has been successfully created.</p>`
   };
 
   try {
