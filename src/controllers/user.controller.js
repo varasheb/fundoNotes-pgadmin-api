@@ -46,7 +46,6 @@ export const forgetPassword = async (req, res) => {
       message: 'Mail sent  Sucefully',
       user: data.user,
       token: data.token,
-      result: data.result.messageId
     });
   } catch (error) {
     res.status(HttpStatus.BAD_REQUEST).json({
@@ -58,7 +57,7 @@ export const forgetPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
-    const userId = req.locals.userId;
+    const userId = req.body.userId;
     const { password } = req.body;
     const data = await UserService.resetPassword(userId, password);
 

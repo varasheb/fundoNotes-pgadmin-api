@@ -19,8 +19,8 @@ router.post('/forgotpassword', emailValidator, userController.forgetPassword);
 
 router.post(
   '/resetPassword',
-  userResetAuth,
   passwordValidator,
+  userResetAuth,
   userController.resetPassword
 );
 
